@@ -117,7 +117,7 @@ export default function CharactersPage() {
                 <EditableCharacter
                   key={char.id}
                   character={char}
-                  onUpdate={(updatedChar) => handleCharacterSave(updatedChar, updatedChar.id)}
+                  onUpdate={(updatedCharData) => handleCharacterSave(updatedCharData, char.id)}
                   onDelete={handleCharacterDelete}
                 />
               ))

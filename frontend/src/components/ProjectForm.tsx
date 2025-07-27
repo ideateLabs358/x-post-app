@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+// APIのベースURLを定義
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 // 作成後に受け取るプロジェクト情報の型を定義
 interface CreatedProject {
   id: number;
@@ -13,7 +16,7 @@ interface CreatedProject {
 export default function ProjectForm() {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
-  const [hashtags, setHashtags] = useState(''); // ★★★ ハッシュタグ用の状態を追加 ★★★
+  const [hashtags, setHashtags] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -31,10 +34,9 @@ export default function ProjectForm() {
     }
 
     try {
-      const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/', {
+      const res = await fetch(`${API_URL}/projects/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // ★★★ ハッシュタグも一緒に送信 ★★★
         body: JSON.stringify({ name, url, hashtags }), 
       });
 
@@ -68,7 +70,6 @@ export default function ProjectForm() {
             <input id="url" name="url" type="url" value={url} onChange={(e) => setUrl(e.target.value)} className="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading} />
           </div>
         </div>
-        {/* ★★★ ハッシュタグ入力欄を追加 ★★★ */}
         <div>
           <label htmlFor="hashtags" className="block text-sm font-medium text-gray-700">プロジェクト用ハッシュタグ</label>
           <input 

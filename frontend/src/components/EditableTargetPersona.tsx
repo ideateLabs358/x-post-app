@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import TargetPersonaForm from './TargetPersonaForm';
 
+// APIのベースURLを定義
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 // 型定義
 interface TargetPersona {
   id: number;
@@ -29,7 +32,7 @@ interface TargetPersonaFormData {
 
 interface EditableTargetPersonaProps {
   persona: TargetPersona;
-  onUpdate: (formData: TargetPersonaFormData, id: number) => Promise<void>;
+  onUpdate: (updatedPersona: TargetPersona) => void;
   onDelete: (id: number) => void;
 }
 
@@ -41,7 +44,7 @@ export default function EditableTargetPersona({ persona, onUpdate, onDelete }: E
     if (window.confirm(`「${persona.name}」を本当に削除しますか？`)) {
       setIsLoading(true);
       try {
-        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/${persona.id}`, {
+        const res = await fetch(`${API_URL}/target-personas/${persona.id}`, {
           method: 'DELETE',
         });
         if (!res.ok) throw new Error('削除に失敗しました。');
@@ -55,14 +58,23 @@ export default function EditableTargetPersona({ persona, onUpdate, onDelete }: E
     }
   };
 
-  const handleFormSave = async (formData: TargetPersonaFormData) => {
-    try {
-        await onUpdate(formData, persona.id);
-        setIsEditing(false); // 保存が成功したら編集モードを終了
-    } catch (error) {
-        // エラーは onUpdate を呼び出す側で処理される想定
-        console.error("Update failed from child:", error);
+  // フォームが保存された時の処理
+  const handleFormSave = async (formData: TargetPersonaFormData, personaId?: number) => {
+    if (!personaId) return;
+    
+    const res = await fetch(`${API_URL}/target-personas/${personaId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || '更新に失敗しました。');
     }
+    const updatedPersona = await res.json();
+    onUpdate(updatedPersona); // 親コンポーネントに更新を通知
+    setIsEditing(false); // 編集モードを終了
   };
 
 
