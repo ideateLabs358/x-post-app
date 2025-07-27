@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import ProjectForm from '@/components/ProjectForm';
 import Link from 'next/link';
 
+// APIのベースURLを定義
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 // 型定義
 interface Project {
   id: number;
@@ -16,25 +19,23 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // プロジェクト一覧を取得する関数
-  const fetchProjects = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/');
-      if (!res.ok) {
-        throw new Error('プロジェクト一覧の取得に失敗しました。');
-      }
-      const data = await res.json();
-      setProjects(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // ページが最初に表示された時にプロジェクト一覧を取得
   useEffect(() => {
+    const fetchProjects = async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetch(`${API_URL}/projects/`);
+        if (!res.ok) {
+          throw new Error('プロジェクト一覧の取得に失敗しました。');
+        }
+        const data = await res.json();
+        setProjects(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     fetchProjects();
   }, []);
 
@@ -46,7 +47,7 @@ export default function Home() {
 
     if (window.confirm(`プロジェクト「${projectName}」を本当に削除しますか？\n関連するすべてのポストも削除されます。`)) {
       try {
-        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${projectId}`, {
+        const res = await fetch(`${API_URL}/projects/${projectId}`, {
           method: 'DELETE',
         });
 

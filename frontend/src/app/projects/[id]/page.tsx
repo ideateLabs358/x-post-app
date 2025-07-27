@@ -5,6 +5,9 @@ import Link from 'next/link';
 import EditablePost from '@/components/EditablePost';
 import EditableNoteArticle from '@/components/EditableNoteArticle';
 
+// APIのベースURLを定義
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 // 型定義
 interface Project {
   id: number;
@@ -64,9 +67,9 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setError('');
     try {
       const [projectRes, charRes, targetRes] = await Promise.all([
-        fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${params.id}`),
-        fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/'),
-        fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/')
+        fetch(`${API_URL}/projects/${params.id}`),
+        fetch(`${API_URL}/characters/`),
+        fetch(`${API_URL}/target-personas/`)
       ]);
 
       if (!projectRes.ok) throw new Error('プロジェクトの取得に失敗しました。');
@@ -105,7 +108,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     if (!project) return;
     setIsSavingSummary(true); 
     try {
-        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${project.id}`, {
+        const res = await fetch(`${API_URL}/projects/${project.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(projectFormData),
@@ -127,7 +130,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setSaveSuccessMessage('');
     setError('');
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${project.id}/summary`, {
+      const res = await fetch(`${API_URL}/projects/${project.id}/summary`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ research_summary: researchSummary }),
@@ -146,7 +149,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setIsGeneratingPosts(true);
     setError('');
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${params.id}/generate-posts`, {
+      const res = await fetch(`${API_URL}/projects/${params.id}/generate-posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -172,7 +175,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setIsGeneratingNote(true);
     setError('');
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${params.id}/generate-note-article`, {
+      const res = await fetch(`${API_URL}/projects/${params.id}/generate-note-article`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -199,7 +202,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   };
 
   const handleNoteArticleUpdate = async (id: number, title: string, content: string) => {
-    const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/note-articles/${id}`, {
+    const res = await fetch(`${API_URL}/note-articles/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, content }),
@@ -215,7 +218,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
   const handleNoteArticleDelete = async (id: number) => {
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/note-articles/${id}`, {
+      const res = await fetch(`${API_URL}/note-articles/${id}`, {
         method: 'DELETE',
       });
       if (!res.ok) throw new Error('note記事の削除に失敗しました。');
@@ -225,13 +228,13 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
       alert(err.message);
     }
   };
-  
+
   if (isLoading) return <div className="p-24 text-center">読み込み中...</div>;
   if (error) return <div className="p-24 text-center text-red-500">エラー: {error}</div>;
   if (!project) return <div className="p-24 text-center">プロジェクトが見つかりませんでした。</div>;
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 sm:p-24 bg-gray-50">
+    <main className="flex min-h-screen flex-col items-center p-8 sm:p-24">
       <div className="w-full max-w-4xl space-y-12">
         <header className="group relative">
           {isEditingProject ? (
@@ -315,10 +318,10 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
             </select>
           </div>
           <div className="flex flex-wrap gap-4">
-            <button onClick={() => handleGeneratePosts()} disabled={isGeneratingPosts} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
+            <button onClick={handleGeneratePosts} disabled={isGeneratingPosts} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
               {isGeneratingPosts ? 'AIが考え中...' : 'Xのポスト案を追加生成'}
             </button>
-            <button onClick={() => handleGenerateNoteArticle()} disabled={isGeneratingNote} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
+            <button onClick={handleGenerateNoteArticle} disabled={isGeneratingNote} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
               {isGeneratingNote ? 'AIが執筆中...' : 'noteの記事案を作成する'}
             </button>
           </div>

@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import CharacterForm from '@/components/CharacterForm';
 import EditableCharacter from '@/components/EditableCharacter';
 
+// APIのベースURLを定義
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 // 型定義
 interface Character {
   id: number;
@@ -46,7 +49,7 @@ export default function CharactersPage() {
     const fetchCharacters = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/');
+        const res = await fetch(`${API_URL}/characters/`);
         if (!res.ok) throw new Error('キャラクター一覧の取得に失敗しました。');
         const data = await res.json();
         setCharacters(data);
@@ -62,8 +65,8 @@ export default function CharactersPage() {
   // 新しいキャラクターが作成/更新された時の処理
   const handleCharacterSave = async (formData: CharacterFormData, characterId?: number) => {
     const endpoint = characterId
-      ? `process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/${characterId}`
-      : 'process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/';
+      ? `${API_URL}/characters/${characterId}`
+      : `${API_URL}/characters/`;
     const method = characterId ? 'PUT' : 'POST';
 
     const res = await fetch(endpoint, {
@@ -114,7 +117,7 @@ export default function CharactersPage() {
                 <EditableCharacter
                   key={char.id}
                   character={char}
-                  onUpdate={handleCharacterSave}
+                  onUpdate={(updatedChar) => handleCharacterSave(updatedChar, updatedChar.id)}
                   onDelete={handleCharacterDelete}
                 />
               ))

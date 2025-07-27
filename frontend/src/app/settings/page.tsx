@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 
+// APIのベースURLを定義
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 // 型定義
 interface Setting {
   id: number;
@@ -23,7 +26,7 @@ export default function SettingsPage() {
     const fetchSettings = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/settings/');
+        const res = await fetch(`${API_URL}/settings/`);
         if (!res.ok) throw new Error('設定の読み込みに失敗しました。');
         
         const settings: Setting[] = await res.json();
@@ -48,20 +51,21 @@ export default function SettingsPage() {
     setSuccessMessage('');
     setError('');
     try {
-      // X用プロンプトの更新
-      const xRes = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/settings/default_post_prompt', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: xPrompt }),
-      });
-      if (!xRes.ok) throw new Error('X用プロンプトの保存に失敗しました。');
+      // 2つの更新処理を並行して実行
+      const [xRes, noteRes] = await Promise.all([
+        fetch(`${API_URL}/settings/default_post_prompt`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ value: xPrompt }),
+        }),
+        fetch(`${API_URL}/settings/default_note_prompt`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ value: notePrompt }),
+        })
+      ]);
 
-      // note用プロンプトの更新
-      const noteRes = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/settings/default_note_prompt', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: notePrompt }),
-      });
+      if (!xRes.ok) throw new Error('X用プロンプトの保存に失敗しました。');
       if (!noteRes.ok) throw new Error('note用プロンプトの保存に失敗しました。');
 
       setSuccessMessage('設定を保存しました！');

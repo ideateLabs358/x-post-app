@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import TargetPersonaForm from '@/components/TargetPersonaForm';
 import EditableTargetPersona from '@/components/EditableTargetPersona';
 
+// APIのベースURLを定義
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 // 型定義
 interface TargetPersona {
   id: number;
@@ -38,7 +41,7 @@ export default function TargetPersonasPage() {
     const fetchTargetPersonas = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/');
+        const res = await fetch(`${API_URL}/target-personas/`);
         if (!res.ok) throw new Error('ターゲットペルソナ一覧の取得に失敗しました。');
         const data = await res.json();
         setPersonas(data);
@@ -54,8 +57,8 @@ export default function TargetPersonasPage() {
   // 新規作成または更新の処理をまとめる
   const handlePersonaSave = async (formData: TargetPersonaFormData, personaId?: number) => {
     const endpoint = personaId
-      ? `process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/${personaId}`
-      : 'process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/';
+      ? `${API_URL}/target-personas/${personaId}`
+      : `${API_URL}/target-personas/`;
     const method = personaId ? 'PUT' : 'POST';
 
     const res = await fetch(endpoint, {
@@ -106,7 +109,7 @@ export default function TargetPersonasPage() {
                 <EditableTargetPersona
                   key={persona.id}
                   persona={persona}
-                  onUpdate={handlePersonaSave}
+                  onUpdate={(updatedData) => handlePersonaSave(updatedData, persona.id)}
                   onDelete={handlePersonaDelete}
                 />
               ))
