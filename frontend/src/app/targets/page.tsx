@@ -38,7 +38,7 @@ export default function TargetPersonasPage() {
     const fetchTargetPersonas = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('http://127.0.0.1:8000/target-personas/');
+        const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/');
         if (!res.ok) throw new Error('ターゲットペルソナ一覧の取得に失敗しました。');
         const data = await res.json();
         setPersonas(data);
@@ -54,8 +54,8 @@ export default function TargetPersonasPage() {
   // 新規作成または更新の処理をまとめる
   const handlePersonaSave = async (formData: TargetPersonaFormData, personaId?: number) => {
     const endpoint = personaId
-      ? `http://127.0.0.1:8000/target-personas/${personaId}`
-      : 'http://127.0.0.1:8000/target-personas/';
+      ? `process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/${personaId}`
+      : 'process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/';
     const method = personaId ? 'PUT' : 'POST';
 
     const res = await fetch(endpoint, {

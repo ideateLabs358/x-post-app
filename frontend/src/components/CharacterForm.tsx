@@ -82,7 +82,7 @@ export default function CharacterForm({ existingCharacter, onSave, onCancel, isC
     setIsGenerating(true);
     setError('');
     try {
-      const res = await fetch('http://127.0.0.1:8000/characters/generate-details', {
+      const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/generate-details', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ seed_text: seedText }),

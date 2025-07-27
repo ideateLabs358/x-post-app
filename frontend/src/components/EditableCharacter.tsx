@@ -50,7 +50,7 @@ export default function EditableCharacter({ character, onUpdate, onDelete }: Edi
     if (window.confirm(`「${character.name}」を本当に削除しますか？`)) {
       setIsLoading(true);
       try {
-        const res = await fetch(`http://127.0.0.1:8000/characters/${character.id}`, {
+        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/${character.id}`, {
           method: 'DELETE',
         });
         if (!res.ok) throw new Error('削除に失敗しました。');

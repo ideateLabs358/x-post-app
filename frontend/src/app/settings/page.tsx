@@ -23,7 +23,7 @@ export default function SettingsPage() {
     const fetchSettings = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('http://127.0.0.1:8000/settings/');
+        const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/settings/');
         if (!res.ok) throw new Error('設定の読み込みに失敗しました。');
         
         const settings: Setting[] = await res.json();
@@ -49,7 +49,7 @@ export default function SettingsPage() {
     setError('');
     try {
       // X用プロンプトの更新
-      const xRes = await fetch('http://127.0.0.1:8000/settings/default_post_prompt', {
+      const xRes = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/settings/default_post_prompt', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value: xPrompt }),
@@ -57,7 +57,7 @@ export default function SettingsPage() {
       if (!xRes.ok) throw new Error('X用プロンプトの保存に失敗しました。');
 
       // note用プロンプトの更新
-      const noteRes = await fetch('http://127.0.0.1:8000/settings/default_note_prompt', {
+      const noteRes = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/settings/default_note_prompt', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value: notePrompt }),

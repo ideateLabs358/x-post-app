@@ -46,7 +46,7 @@ export default function CharactersPage() {
     const fetchCharacters = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('http://127.0.0.1:8000/characters/');
+        const res = await fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/');
         if (!res.ok) throw new Error('キャラクター一覧の取得に失敗しました。');
         const data = await res.json();
         setCharacters(data);
@@ -62,8 +62,8 @@ export default function CharactersPage() {
   // 新しいキャラクターが作成/更新された時の処理
   const handleCharacterSave = async (formData: CharacterFormData, characterId?: number) => {
     const endpoint = characterId
-      ? `http://127.0.0.1:8000/characters/${characterId}`
-      : 'http://127.0.0.1:8000/characters/';
+      ? `process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/${characterId}`
+      : 'process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/';
     const method = characterId ? 'PUT' : 'POST';
 
     const res = await fetch(endpoint, {

@@ -64,9 +64,9 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setError('');
     try {
       const [projectRes, charRes, targetRes] = await Promise.all([
-        fetch(`http://127.0.0.1:8000/projects/${params.id}`),
-        fetch('http://127.0.0.1:8000/characters/'),
-        fetch('http://127.0.0.1:8000/target-personas/')
+        fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${params.id}`),
+        fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/'),
+        fetch('process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/target-personas/')
       ]);
 
       if (!projectRes.ok) throw new Error('プロジェクトの取得に失敗しました。');
@@ -105,7 +105,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     if (!project) return;
     setIsSavingSummary(true); 
     try {
-        const res = await fetch(`http://127.0.0.1:8000/projects/${project.id}`, {
+        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${project.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(projectFormData),
@@ -127,7 +127,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setSaveSuccessMessage('');
     setError('');
     try {
-      const res = await fetch(`http://127.0.0.1:8000/projects/${project.id}/summary`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${project.id}/summary`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ research_summary: researchSummary }),
@@ -146,7 +146,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setIsGeneratingPosts(true);
     setError('');
     try {
-      const res = await fetch(`http://127.0.0.1:8000/projects/${params.id}/generate-posts`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${params.id}/generate-posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -172,7 +172,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setIsGeneratingNote(true);
     setError('');
     try {
-      const res = await fetch(`http://127.0.0.1:8000/projects/${params.id}/generate-note-article`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/projects/${params.id}/generate-note-article`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -199,7 +199,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   };
 
   const handleNoteArticleUpdate = async (id: number, title: string, content: string) => {
-    const res = await fetch(`http://127.0.0.1:8000/note-articles/${id}`, {
+    const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/note-articles/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, content }),
@@ -215,7 +215,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
   const handleNoteArticleDelete = async (id: number) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/note-articles/${id}`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/note-articles/${id}`, {
         method: 'DELETE',
       });
       if (!res.ok) throw new Error('note記事の削除に失敗しました。');

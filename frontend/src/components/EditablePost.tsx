@@ -45,7 +45,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/posts/${post.id}`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: content }),
@@ -64,7 +64,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     if (window.confirm('このポストを本当に削除しますか？')) {
       setIsLoading(true);
       try {
-        const res = await fetch(`http://127.0.0.1:8000/posts/${post.id}`, {
+        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}`, {
           method: 'DELETE',
         });
         if (!res.ok) throw new Error('削除に失敗しました。');
@@ -84,7 +84,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/posts/${post.id}/schedule`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/schedule`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scheduled_at: scheduledAt.toISOString() }),
@@ -110,7 +110,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     if (window.confirm('この内容で今すぐXに投稿しますか？')) {
       setIsLoading(true);
       try {
-        const res = await fetch(`http://127.0.0.1:8000/posts/${post.id}/post-now`, {
+        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/post-now`, {
           method: 'POST',
         });
         if (!res.ok) {
@@ -139,7 +139,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
   const handleGenerateMediaPrompts = async () => {
     setIsGeneratingMedia(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/posts/${post.id}/generate-media-prompts`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/generate-media-prompts`, {
         method: 'POST',
       });
       if (!res.ok) {
@@ -164,7 +164,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     formData.append('file', file);
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/posts/${post.id}/upload-image`, {
+      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/upload-image`, {
         method: 'POST',
         body: formData,
       });
