@@ -37,14 +37,14 @@ interface TargetPersona {
   name: string;
 }
 
-// ★★★ このページが受け取るpropsの型を、正しく定義 ★★★
-type PageProps = {
+// ★★★ このページが受け取るpropsの型を、衝突しない名前に変更 ★★★
+type Props = {
   params: {
     id: string;
   };
 };
 
-export default function ProjectDetailPage({ params }: PageProps) {
+export default function ProjectDetailPage({ params }: Props) {
   const [project, setProject] = useState<Project | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [noteArticles, setNoteArticles] = useState<NoteArticle[]>([]);
@@ -317,4 +317,3 @@ export default function ProjectDetailPage({ params }: PageProps) {
     </main>
   );
 }
-
