@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import EditablePost from '@/components/EditablePost';
 import EditableNoteArticle from '@/components/EditableNoteArticle';
 
