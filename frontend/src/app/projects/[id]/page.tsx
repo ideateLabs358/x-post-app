@@ -194,8 +194,12 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setPosts((currentPosts) => currentPosts.filter((post) => post.id !== deletedPostId));
   };
   
-  const handleNoteArticleUpdate = (updatedArticle: NoteArticle) => {
-    setNoteArticles(prev => prev.map(a => a.id === updatedArticle.id ? updatedArticle : a));
+  const handleNoteArticleUpdate = (id: number, data: { title: string; content: string }) => {
+    setNoteArticles(prev => 
+      prev.map(article => 
+        article.id === id ? { ...article, ...data } : article
+      )
+    );
   };
 
   const handleNoteArticleDelete = (deletedArticleId: number) => {
