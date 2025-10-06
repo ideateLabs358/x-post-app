@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-// APIのベースURLを定義
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 // 型定義
@@ -36,8 +35,13 @@ export default function SettingsPage() {
         if (xPromptSetting) setXPrompt(xPromptSetting.value || '');
         if (notePromptSetting) setNotePrompt(notePromptSetting.value || '');
 
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError('予期せぬエラーが発生しました。');
+        }
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -51,27 +55,30 @@ export default function SettingsPage() {
     setSuccessMessage('');
     setError('');
     try {
-      // 2つの更新処理を並行して実行
-      const [xRes, noteRes] = await Promise.all([
-        fetch(`${API_URL}/settings/default_post_prompt`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ value: xPrompt }),
-        }),
-        fetch(`${API_URL}/settings/default_note_prompt`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ value: notePrompt }),
-        })
-      ]);
-
+      // X用プロンプトの更新
+      const xRes = await fetch(`${API_URL}/settings/default_post_prompt`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: xPrompt }),
+      });
       if (!xRes.ok) throw new Error('X用プロンプトの保存に失敗しました。');
+
+      // note用プロンプトの更新
+      const noteRes = await fetch(`${API_URL}/settings/default_note_prompt`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: notePrompt }),
+      });
       if (!noteRes.ok) throw new Error('note用プロンプトの保存に失敗しました。');
 
       setSuccessMessage('設定を保存しました！');
       setTimeout(() => setSuccessMessage(''), 3000); // 3秒後にメッセージを消す
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError('予期せぬエラーが発生しました。');
+        }
     } finally {
       setIsSaving(false);
     }

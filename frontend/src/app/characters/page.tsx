@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import CharacterForm from '@/components/CharacterForm';
 import EditableCharacter from '@/components/EditableCharacter';
 
-// APIのベースURLを定義
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 // 型定義
@@ -53,8 +52,13 @@ export default function CharactersPage() {
         if (!res.ok) throw new Error('キャラクター一覧の取得に失敗しました。');
         const data = await res.json();
         setCharacters(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError('予期せぬエラーが発生しました。');
+        }
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -117,7 +121,7 @@ export default function CharactersPage() {
                 <EditableCharacter
                   key={char.id}
                   character={char}
-                  onUpdate={(updatedCharData) => handleCharacterSave(updatedCharData, char.id)}
+                  onUpdate={handleCharacterSave}
                   onDelete={handleCharacterDelete}
                 />
               ))

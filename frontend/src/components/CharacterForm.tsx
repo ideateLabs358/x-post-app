@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-// APIのベースURLを定義
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-
 // 型定義
 interface Character {
   id: number;
@@ -41,6 +38,8 @@ interface CharacterFormProps {
   onCancel?: () => void;
   isCreatingNew: boolean;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export default function CharacterForm({ existingCharacter, onSave, onCancel, isCreatingNew }: CharacterFormProps) {
   const [formData, setFormData] = useState<CharacterFormData>({
@@ -93,8 +92,12 @@ export default function CharacterForm({ existingCharacter, onSave, onCancel, isC
       if (!res.ok) throw new Error('AIによるペルソナ生成に失敗しました。');
       const aiGeneratedData = await res.json();
       setFormData({ ...formData, ...aiGeneratedData });
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -115,8 +118,12 @@ export default function CharacterForm({ existingCharacter, onSave, onCancel, isC
         });
         setSeedText('');
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+       if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
     } finally {
       setIsLoading(false);
     }

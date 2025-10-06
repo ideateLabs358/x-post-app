@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import TargetPersonaForm from '@/components/TargetPersonaForm';
 import EditableTargetPersona from '@/components/EditableTargetPersona';
 
-// APIのベースURLを定義
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 // 型定義
@@ -45,8 +44,13 @@ export default function TargetPersonasPage() {
         if (!res.ok) throw new Error('ターゲットペルソナ一覧の取得に失敗しました。');
         const data = await res.json();
         setPersonas(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError('予期せぬエラーが発生しました。');
+        }
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -109,7 +113,7 @@ export default function TargetPersonasPage() {
                 <EditableTargetPersona
                   key={persona.id}
                   persona={persona}
-                  onUpdate={(updatedData) => handlePersonaSave(updatedData, persona.id)}
+                  onUpdate={handlePersonaSave}
                   onDelete={handlePersonaDelete}
                 />
               ))

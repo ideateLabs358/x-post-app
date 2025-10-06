@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -19,33 +18,28 @@ interface EditablePostProps {
   onPostDelete: (id: number) => void;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 export default function EditablePost({ post, onPostDelete }: EditablePostProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isScheduling, setIsScheduling] = useState(false);
   const [content, setContent] = useState(post.content);
-  const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
+  const [scheduledAt, setScheduledAt] = useState<Date | null>(
+    post.scheduled_at ? new Date(post.scheduled_at) : null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState(post.status);
   const [imageUrl, setImageUrl] = useState(post.image_url);
-  const router = useRouter();
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [mediaPrompts, setMediaPrompts] = useState<{ image_prompt: string, video_prompt: string } | null>(null);
   const [isGeneratingMedia, setIsGeneratingMedia] = useState(false);
 
-  // post propが外部から変更されたときに内部の状態を同期させる
-  useEffect(() => {
-    setContent(post.content);
-    setStatus(post.status);
-    setImageUrl(post.image_url);
-    setScheduledAt(post.scheduled_at ? new Date(post.scheduled_at) : null);
-  }, [post]);
-
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}`, {
+      const res = await fetch(`${API_URL}/posts/${post.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: content }),
@@ -64,7 +58,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     if (window.confirm('このポストを本当に削除しますか？')) {
       setIsLoading(true);
       try {
-        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}`, {
+        const res = await fetch(`${API_URL}/posts/${post.id}`, {
           method: 'DELETE',
         });
         if (!res.ok) throw new Error('削除に失敗しました。');
@@ -84,7 +78,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/schedule`, {
+      const res = await fetch(`${API_URL}/posts/${post.id}/schedule`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scheduled_at: scheduledAt.toISOString() }),
@@ -98,9 +92,13 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
       setScheduledAt(new Date(updatedPost.scheduled_at));
       setIsScheduling(false);
       alert('予約が完了しました！');
-    } catch (error: any) {
-      console.error(error);
-      alert(`予約中にエラーが発生しました: ${error.message}`);
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(`予約中にエラーが発生しました: ${err.message}`);
+      } else {
+        alert('予期せぬエラーが発生しました。');
+      }
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -110,7 +108,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     if (window.confirm('この内容で今すぐXに投稿しますか？')) {
       setIsLoading(true);
       try {
-        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/post-now`, {
+        const res = await fetch(`${API_URL}/posts/${post.id}/post-now`, {
           method: 'POST',
         });
         if (!res.ok) {
@@ -119,9 +117,13 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
         }
         alert('投稿に成功しました！');
         setStatus('posted');
-      } catch (error: any) {
-        console.error(error);
-        alert(`投稿中にエラーが発生しました: ${error.message}`);
+      } catch (err) {
+        if (err instanceof Error) {
+          alert(`投稿中にエラーが発生しました: ${err.message}`);
+        } else {
+          alert('予期せぬエラーが発生しました。');
+        }
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -139,7 +141,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
   const handleGenerateMediaPrompts = async () => {
     setIsGeneratingMedia(true);
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/generate-media-prompts`, {
+      const res = await fetch(`${API_URL}/posts/${post.id}/generate-media-prompts`, {
         method: 'POST',
       });
       if (!res.ok) {
@@ -148,8 +150,12 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
       }
       const data = await res.json();
       setMediaPrompts(data);
-    } catch (error: any) {
-      alert(error.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert('予期せぬエラーが発生しました。');
+      }
     } finally {
       setIsGeneratingMedia(false);
     }
@@ -164,19 +170,22 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
     formData.append('file', file);
 
     try {
-      const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/posts/${post.id}/upload-image`, {
+      const res = await fetch(`${API_URL}/posts/${post.id}/upload-image`, {
         method: 'POST',
         body: formData,
       });
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || '画像のアップロードに失敗しました。');
+        throw new Error('画像のアップロードに失敗しました。');
       }
       const updatedPost = await res.json();
       setImageUrl(updatedPost.image_url);
       alert('画像が添付されました！');
-    } catch (error: any) {
-      alert(error.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert('予期せぬエラーが発生しました。');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -220,7 +229,8 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
 
       {imageUrl && (
         <div className="mb-4">
-          <img src={imageUrl} alt="添付画像" className="max-w-xs max-h-48 object-cover rounded-lg border" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={imageUrl} alt="添付画像" className="max-w-full h-auto rounded-lg border" />
         </div>
       )}
 
@@ -255,7 +265,7 @@ export default function EditablePost({ post, onPostDelete }: EditablePostProps) 
         accept="image/png, image/jpeg, image/gif"
       />
 
-      <div className="absolute top-2 right-2 flex flex-wrap gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button onClick={() => fileInputRef.current?.click()} disabled={isLoading || status !== 'draft'} className="bg-gray-500 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded border shadow-sm disabled:bg-gray-400">
           画像
         </button>

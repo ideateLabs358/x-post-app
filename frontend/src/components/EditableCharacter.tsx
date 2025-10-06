@@ -35,10 +35,9 @@ interface CharacterFormData {
     impression: string;
 }
 
-// 親コンポーネントから受け取る関数の型定義を修正
 interface EditableCharacterProps {
   character: Character;
-  onUpdate: (formData: CharacterFormData, id: number) => Promise<void>; // ★★★ ここを修正 ★★★
+  onUpdate: (formData: CharacterFormData, id: number) => Promise<void>;
   onDelete: (id: number) => void;
 }
 
@@ -50,7 +49,7 @@ export default function EditableCharacter({ character, onUpdate, onDelete }: Edi
     if (window.confirm(`「${character.name}」を本当に削除しますか？`)) {
       setIsLoading(true);
       try {
-        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'/characters/${character.id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/characters/${character.id}`, {
           method: 'DELETE',
         });
         if (!res.ok) throw new Error('削除に失敗しました。');
@@ -63,10 +62,14 @@ export default function EditableCharacter({ character, onUpdate, onDelete }: Edi
     }
   };
 
-  // フォームが保存された時の処理を修正
-  const handleFormSave = async (formData: CharacterFormData, characterId?: number) => {
-    await onUpdate(formData, character.id); // 親に処理をそのまま渡す
-    setIsEditing(false); // 編集モードを終了
+  const handleFormSave = async (formData: CharacterFormData) => {
+    try {
+        await onUpdate(formData, character.id);
+        setIsEditing(false); // 保存が成功したら編集モードを終了
+    } catch (error) {
+        // エラーは onUpdate を呼び出す側の親コンポーネントで処理される
+        console.error("Update failed from child:", error);
+    }
   };
 
 

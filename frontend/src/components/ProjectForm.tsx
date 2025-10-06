@@ -3,15 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// APIのベースURLを定義
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-
 // 作成後に受け取るプロジェクト情報の型を定義
 interface CreatedProject {
   id: number;
   name: string;
   url: string;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export default function ProjectForm() {
   const [name, setName] = useState('');
@@ -37,7 +36,7 @@ export default function ProjectForm() {
       const res = await fetch(`${API_URL}/projects/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, url, hashtags }), 
+        body: JSON.stringify({ name, url, hashtags }),
       });
 
       if (!res.ok) {
@@ -49,47 +48,37 @@ export default function ProjectForm() {
       // 新しいプロジェクトの詳細ページへ移動
       router.push(`/projects/${newProject.id}`);
 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
       setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-4xl p-8 bg-white border rounded-lg shadow-sm">
+    <form onSubmit={handleSubmit} className="w-full p-8 bg-white border rounded-lg shadow-sm">
       <h2 className="text-2xl font-bold mb-6">新規プロジェクト作成</h2>
       {error && <p className="mb-4 text-red-500">{error}</p>}
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">プロジェクト名 (必須)</label>
-            <input id="name" name="name" type="text" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading} />
-          </div>
-          <div>
-            <label htmlFor="url" className="block text-sm font-medium text-gray-700">調査対象のURL (必須)</label>
-            <input id="url" name="url" type="url" value={url} onChange={(e) => setUrl(e.target.value)} className="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading} />
-          </div>
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="name" className="block text-gray-700 font-bold mb-2">プロジェクト名 (必須)</label>
+          <input id="name" name="name" type="text" value={name} onChange={(e) => setName(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" disabled={isLoading} />
         </div>
         <div>
-          <label htmlFor="hashtags" className="block text-sm font-medium text-gray-700">プロジェクト用ハッシュタグ</label>
-          <input 
-            id="hashtags" 
-            name="hashtags" 
-            type="text" 
-            value={hashtags} 
-            onChange={(e) => setHashtags(e.target.value)} 
-            placeholder="#ハッシュタグ1 #ハッシュタグ2"
-            className="mt-1 shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            disabled={isLoading} 
-          />
-          <p className="mt-2 text-xs text-gray-500">スペースで区切って複数入力できます。</p>
+          <label htmlFor="url" className="block text-gray-700 font-bold mb-2">調査対象のURL (必須)</label>
+          <input id="url" name="url" type="url" value={url} onChange={(e) => setUrl(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" disabled={isLoading} />
+        </div>
+        <div>
+            <label htmlFor="hashtags" className="block text-gray-700 font-bold mb-2">プロジェクト用ハッシュタグ</label>
+            <input id="hashtags" name="hashtags" type="text" value={hashtags} onChange={(e) => setHashtags(e.target.value)} placeholder="例: #AI #Webアプリ" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" disabled={isLoading} />
         </div>
       </div>
-      <div className="pt-8">
-        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400" disabled={isLoading}>
-          {isLoading ? 'AIが調査中...' : 'プロジェクトを作成＆調査開始'}
-        </button>
-      </div>
+      <button type="submit" className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400" disabled={isLoading}>
+        {isLoading ? 'AIが調査中...' : 'プロジェクトを作成＆調査開始'}
+      </button>
     </form>
   );
 }

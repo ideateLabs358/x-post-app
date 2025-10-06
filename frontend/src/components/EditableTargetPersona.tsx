@@ -3,9 +3,6 @@
 import { useState } from 'react';
 import TargetPersonaForm from './TargetPersonaForm';
 
-// APIのベースURLを定義
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-
 // 型定義
 interface TargetPersona {
   id: number;
@@ -32,9 +29,11 @@ interface TargetPersonaFormData {
 
 interface EditableTargetPersonaProps {
   persona: TargetPersona;
-  onUpdate: (updatedPersona: TargetPersona) => void;
+  onUpdate: (formData: TargetPersonaFormData, id: number) => Promise<void>;
   onDelete: (id: number) => void;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export default function EditableTargetPersona({ persona, onUpdate, onDelete }: EditableTargetPersonaProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -58,23 +57,13 @@ export default function EditableTargetPersona({ persona, onUpdate, onDelete }: E
     }
   };
 
-  // フォームが保存された時の処理
-  const handleFormSave = async (formData: TargetPersonaFormData, personaId?: number) => {
-    if (!personaId) return;
-    
-    const res = await fetch(`${API_URL}/target-personas/${personaId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || '更新に失敗しました。');
+  const handleFormSave = async (formData: TargetPersonaFormData) => {
+    try {
+        await onUpdate(formData, persona.id);
+        setIsEditing(false);
+    } catch (error) {
+        console.error("Update failed from child:", error);
     }
-    const updatedPersona = await res.json();
-    onUpdate(updatedPersona); // 親コンポーネントに更新を通知
-    setIsEditing(false); // 編集モードを終了
   };
 
 
@@ -104,7 +93,7 @@ export default function EditableTargetPersona({ persona, onUpdate, onDelete }: E
         </ul>
       <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button onClick={() => setIsEditing(true)} className="bg-white text-xs px-2 py-1 rounded border shadow-sm hover:bg-gray-50">編集</button>
-        <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded border shadow-sm" disabled={isLoading}>削除</button>
+        <button onClick={handleDelete} disabled={isLoading} className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded border shadow-sm">削除</button>
       </div>
     </div>
   );
