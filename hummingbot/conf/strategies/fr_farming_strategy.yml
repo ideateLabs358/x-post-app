@@ -1,0 +1,48 @@
+
+# Strategy configuration
+strategy: pure_market_making
+exchange: binance_paper_trade
+market: BTC-USDT
+
+# --- Bid and Ask Spreads ---
+bid_spread: 0.01
+ask_spread: 0.01
+
+# --- Order Amount ---
+order_amount: 0.01
+
+# --- Order Refresh Time ---
+order_refresh_time: 30.0
+
+# --- Inventory Skew ---
+inventory_skew_enabled: true
+inventory_target_base_pct: 0.5
+
+# --- Price Ceilings and Floors ---
+price_ceiling: -1.0
+price_floor: -1.0
+
+# --- Advanced Order Management ---
+max_order_age: 1800.0
+order_refresh_tolerance_pct: 0.0
+
+# --- Filled Order Delay ---
+filled_order_delay: 60.0
+
+# --- Hanging Orders ---
+hanging_orders_enabled: false
+hanging_orders_cancel_pct: 0.1
+
+# --- Price Source ---
+price_source: current_market
+price_source_exchange: binance
+price_source_market: ETH-USDT
+price_source_custom_api:
+
+# --- Order Levels ---
+order_levels: 1
+order_level_amount: 0
+order_level_spread: 0
+
+# --- Other ---
+add_transaction_costs: false

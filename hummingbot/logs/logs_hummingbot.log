@@ -1,0 +1,161 @@
+2025-07-31 12:10:23,432 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'powershell.exe'
+Traceback (most recent call last):
+  File "/opt/conda/envs/hummingbot/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/input/vt100.py", line 162, in callback_wrapper
+    callback()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 714, in read_from_input_in_context
+    context.copy().run(read_from_input)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 694, in read_from_input
+    self.key_processor.process_keys()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 273, in process_keys
+    self._process_coroutine.send(key_press)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 188, in _process
+    self._call_handler(matches[-1], key_sequence=buffer[:])
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 323, in _call_handler
+    handler.call(event)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_bindings.py", line 127, in call
+    result = self.handler(event)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/hummingbot/hummingbot/client/ui/keybindings.py", line 61, in do_paste
+    get_app().layout.current_buffer.paste_clipboard_data(get_app().clipboard.get_data())
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/clipboard/pyperclip.py", line 28, in get_data
+    text = pyperclip.paste()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/pyperclip/__init__.py", line 644, in lazy_load_stub_paste
+    return paste()
+           ^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/pyperclip/__init__.py", line 477, in paste_wsl
+    p = subprocess.Popen(['powershell.exe', '-noprofile', '-command', ps_script],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'powershell.exe'
+2025-07-31 12:10:32,408 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'powershell.exe'
+Traceback (most recent call last):
+  File "/opt/conda/envs/hummingbot/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/input/vt100.py", line 162, in callback_wrapper
+    callback()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 714, in read_from_input_in_context
+    context.copy().run(read_from_input)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 694, in read_from_input
+    self.key_processor.process_keys()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 273, in process_keys
+    self._process_coroutine.send(key_press)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 188, in _process
+    self._call_handler(matches[-1], key_sequence=buffer[:])
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 323, in _call_handler
+    handler.call(event)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_bindings.py", line 127, in call
+    result = self.handler(event)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/hummingbot/hummingbot/client/ui/keybindings.py", line 61, in do_paste
+    get_app().layout.current_buffer.paste_clipboard_data(get_app().clipboard.get_data())
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/clipboard/pyperclip.py", line 28, in get_data
+    text = pyperclip.paste()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/pyperclip/__init__.py", line 477, in paste_wsl
+    p = subprocess.Popen(['powershell.exe', '-noprofile', '-command', ps_script],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'powershell.exe'
+2025-07-31 12:10:47,152 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'powershell.exe'
+Traceback (most recent call last):
+  File "/opt/conda/envs/hummingbot/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/input/vt100.py", line 162, in callback_wrapper
+    callback()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 714, in read_from_input_in_context
+    context.copy().run(read_from_input)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 694, in read_from_input
+    self.key_processor.process_keys()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 273, in process_keys
+    self._process_coroutine.send(key_press)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 188, in _process
+    self._call_handler(matches[-1], key_sequence=buffer[:])
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 323, in _call_handler
+    handler.call(event)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_bindings.py", line 127, in call
+    result = self.handler(event)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/hummingbot/hummingbot/client/ui/keybindings.py", line 61, in do_paste
+    get_app().layout.current_buffer.paste_clipboard_data(get_app().clipboard.get_data())
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/clipboard/pyperclip.py", line 28, in get_data
+    text = pyperclip.paste()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/pyperclip/__init__.py", line 477, in paste_wsl
+    p = subprocess.Popen(['powershell.exe', '-noprofile', '-command', ps_script],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'powershell.exe'
+2025-07-31 12:11:02,623 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'clip.exe'
+NoneType: None
+2025-07-31 12:13:49,165 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'clip.exe'
+NoneType: None
+2025-07-31 12:45:56,958 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'clip.exe'
+NoneType: None
+2025-07-31 12:46:00,239 - 17 - hummingbot.client.hummingbot_application - ERROR - MQTT is already stopped!
+2025-07-31 13:08:52,506 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'powershell.exe'
+Traceback (most recent call last):
+  File "/opt/conda/envs/hummingbot/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/input/vt100.py", line 162, in callback_wrapper
+    callback()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 714, in read_from_input_in_context
+    context.copy().run(read_from_input)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/application/application.py", line 694, in read_from_input
+    self.key_processor.process_keys()
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 273, in process_keys
+    self._process_coroutine.send(key_press)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 188, in _process
+    self._call_handler(matches[-1], key_sequence=buffer[:])
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_processor.py", line 323, in _call_handler
+    handler.call(event)
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/key_binding/key_bindings.py", line 127, in call
+    result = self.handler(event)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/hummingbot/hummingbot/client/ui/keybindings.py", line 61, in do_paste
+    get_app().layout.current_buffer.paste_clipboard_data(get_app().clipboard.get_data())
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/prompt_toolkit/clipboard/pyperclip.py", line 28, in get_data
+    text = pyperclip.paste()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/pyperclip/__init__.py", line 644, in lazy_load_stub_paste
+    return paste()
+           ^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/site-packages/pyperclip/__init__.py", line 477, in paste_wsl
+    p = subprocess.Popen(['powershell.exe', '-noprofile', '-command', ps_script],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/conda/envs/hummingbot/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'powershell.exe'
+2025-07-31 13:42:16,362 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'clip.exe'
+NoneType: None
+2025-07-31 13:45:15,009 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'clip.exe'
+NoneType: None
+2025-07-31 13:45:57,477 - 17 - hummingbot.client.hummingbot_application - ERROR - MQTT is already stopped!
+2025-07-31 13:52:41,506 - 17 - hummingbot.client.hummingbot_application - ERROR - Gateway is offline
+2025-07-31 13:53:09,675 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'clip.exe'
+NoneType: None
+2025-07-31 13:54:29,956 - 17 - hummingbot.client.hummingbot_application - ERROR - Gateway is offline
+2025-07-31 13:59:51,850 - 17 - hummingbot.client.ui.hummingbot_cli - ERROR - Unhandled error in prompt_toolkit: [Errno 2] No such file or directory: 'clip.exe'
+NoneType: None
+2025-07-31 13:59:58,994 - 17 - hummingbot.client.hummingbot_application - ERROR - MQTT is already stopped!
+2025-07-31 14:10:18,510 - 17 - hummingbot.client.hummingbot_application - ERROR - MQTT is already stopped!
+2025-07-31 14:21:06,067 - 17 - hummingbot.core.gateway.gateway_status_monitor - INFO - Gateway Service is ONLINE.
+2025-07-31 14:23:50,859 - 17 - hummingbot.client.hummingbot_application - ERROR - MQTT is already stopped!
+2025-07-31 14:28:19,668 - 17 - hummingbot.core.gateway.gateway_status_monitor - INFO - Gateway Service is ONLINE.
