@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ProjectForm from '@/components/ProjectForm';
 import Link from 'next/link';
+import ProjectForm from '@/components/ProjectForm';
 
-// APIのベースURLを定義
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 // 型定義
@@ -19,7 +18,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // ページが最初に表示された時にプロジェクト一覧を取得
+  // プロジェクト一覧を取得する関数
   useEffect(() => {
     const fetchProjects = async () => {
       setIsLoading(true);
@@ -30,8 +29,12 @@ export default function Home() {
         }
         const data = await res.json();
         setProjects(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError('予期せぬエラーが発生しました。');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -59,8 +62,12 @@ export default function Home() {
         setProjects(prevProjects => prevProjects.filter(p => p.id !== projectId));
         alert('プロジェクトを削除しました。');
         
-      } catch (err: any) {
-        alert(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+            alert(err.message);
+        } else {
+            alert('予期せぬエラーが発生しました。');
+        }
       }
     }
   };

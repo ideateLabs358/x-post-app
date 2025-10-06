@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import EditablePost from '@/components/EditablePost';
 
-// APIのベースURLを定義
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 // 型定義
@@ -95,7 +95,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
       }
     };
     fetchData();
-  }, [params.id]);
+  }, [params.id, noteArticle]); // ★★★ 依存配列に noteArticle を追加 ★★★
 
   const handleProjectUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
