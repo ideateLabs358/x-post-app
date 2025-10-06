@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import EditablePost from '@/components/EditablePost';
+import EditableNoteArticle from '@/components/EditableNoteArticle';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
@@ -11,8 +13,8 @@ interface Project {
   name: string;
   url: string;
   posts: Post[];
+  note_articles: NoteArticle[];
   research_summary: string | null;
-  latest_ai_response: string | null;
   hashtags: string | null;
 }
 interface Post {
@@ -21,6 +23,11 @@ interface Post {
   status: string;
   scheduled_at: string | null;
   image_url: string | null;
+}
+interface NoteArticle {
+  id: number;
+  title: string;
+  content: string;
 }
 interface Character {
   id: number;
@@ -31,9 +38,17 @@ interface TargetPersona {
   name: string;
 }
 
-export default function ProjectDetailPage({ params }: { params: { id: string } }) {
+// ★★★ このページが受け取るpropsの型を、正しく定義 ★★★
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default function ProjectDetailPage({ params }: PageProps) {
   const [project, setProject] = useState<Project | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [noteArticles, setNoteArticles] = useState<NoteArticle[]>([]);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [targetPersonas, setTargetPersonas] = useState<TargetPersona[]>([]);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string>('');
@@ -44,7 +59,6 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
   const [isGeneratingPosts, setIsGeneratingPosts] = useState(false);
   const [isGeneratingNote, setIsGeneratingNote] = useState(false);
-  const [noteArticle, setNoteArticle] = useState('');
 
   const [researchSummary, setResearchSummary] = useState('');
   const [isSavingSummary, setIsSavingSummary] = useState(false);
@@ -53,7 +67,6 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   const [isEditingProject, setIsEditingProject] = useState(false);
   const [projectFormData, setProjectFormData] = useState({ name: '', url: '', hashtags: '' });
 
-  // ページ読み込み時のデータ取得
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -72,8 +85,8 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
         const projectData: Project = await projectRes.json();
         setProject(projectData);
         if (projectData.posts) setPosts(projectData.posts);
+        if (projectData.note_articles) setNoteArticles(projectData.note_articles);
         if (projectData.research_summary) setResearchSummary(projectData.research_summary);
-        if (projectData.latest_ai_response && !noteArticle) setNoteArticle(projectData.latest_ai_response);
         setProjectFormData({
             name: projectData.name || '',
             url: projectData.url || '',
@@ -94,7 +107,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
       }
     };
     fetchData();
-  }, [params.id, noteArticle]); // ★★★ 依存配列に noteArticle を追加 ★★★
+  }, [params.id]);
 
   const handleProjectUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,7 +185,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
       if (type === 'posts') {
         setPosts((currentPosts) => [...currentPosts, ...data]);
       } else {
-        setNoteArticle(data.article_text);
+        setNoteArticles((currentArticles) => [...currentArticles, data]);
       }
     } catch (err) {
         if (err instanceof Error) {
@@ -188,12 +201,12 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     setPosts((currentPosts) => currentPosts.filter((post) => post.id !== deletedPostId));
   };
   
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('クリップボードにコピーしました！');
-    }, () => {
-      alert('コピーに失敗しました。');
-    });
+  const handleNoteArticleUpdate = (updatedArticle: NoteArticle) => {
+    setNoteArticles(prev => prev.map(a => a.id === updatedArticle.id ? updatedArticle : a));
+  };
+
+  const handleNoteArticleDelete = (deletedArticleId: number) => {
+    setNoteArticles(prev => prev.filter(a => a.id !== deletedArticleId));
   };
 
   if (isLoading) return <div className="p-24 text-center">読み込み中...</div>;
@@ -270,20 +283,26 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
           </div>
           <p className="mb-6 text-gray-600">ペルソナや言語を選択すると、それに合わせた内容が生成されます。</p>
           <div className="flex flex-wrap gap-4">
-            <button onClick={() => handleGenerateContent('posts')} disabled={isGeneratingPosts} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
+            <button onClick={() => handleGenerateContent('posts')} disabled={isGeneratingPosts || isLoading} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
               {isGeneratingPosts ? 'AIが考え中...' : 'Xのポスト案を追加生成'}
             </button>
-            <button onClick={() => handleGenerateContent('note')} disabled={isGeneratingNote} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
+            <button onClick={() => handleGenerateContent('note')} disabled={isGeneratingNote || isLoading} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all disabled:bg-gray-400">
               {isGeneratingNote ? 'AIが執筆中...' : 'noteの記事案を作成する'}
             </button>
           </div>
         </div>
         
-        {noteArticle && (
-          <div className="p-8 bg-white border rounded-lg shadow-sm relative">
-            <h3 className="text-2xl font-bold mb-4">AIによるnote記事案</h3>
-            <button onClick={() => copyToClipboard(noteArticle)} className="absolute top-4 right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-3 py-1 rounded-full">本文をコピー</button>
-            <pre className="whitespace-pre-wrap font-sans bg-gray-50 p-4 rounded-md">{noteArticle}</pre>
+        {noteArticles.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-3xl font-bold">note記事一覧・編集</h3>
+            {noteArticles.map(article => (
+              <EditableNoteArticle 
+                key={article.id} 
+                article={article} 
+                onUpdate={handleNoteArticleUpdate}
+                onDelete={handleNoteArticleDelete}
+              />
+            ))}
           </div>
         )}
 
@@ -299,3 +318,4 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     </main>
   );
 }
+
