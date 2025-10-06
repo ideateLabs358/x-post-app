@@ -37,14 +37,8 @@ interface TargetPersona {
   name: string;
 }
 
-// ★★★ このページが受け取るpropsの型を、衝突しない名前に変更 ★★★
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-export default function ProjectDetailPage({ params }: Props) {
+// ★★★ ここでコンポーネントに直接、インラインで型を指定します ★★★
+export default function ProjectDetailPage({ params }: { params: { id: string } }) {
   const [project, setProject] = useState<Project | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [noteArticles, setNoteArticles] = useState<NoteArticle[]>([]);
